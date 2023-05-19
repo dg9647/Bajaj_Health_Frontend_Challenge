@@ -1,0 +1,800 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Employee Directory</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #c6ddec;
+      padding: 20px;
+    }
+    
+    h1 {
+      text-align: center;
+      color: #333333;
+    }
+    
+    label {
+      font-weight: bold;
+    }
+    
+    input[type="text"],
+    select {
+      margin-bottom: 10px;
+      width: 100%;
+      padding: 8px;
+    }
+    
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+      background-color: #fff;
+      box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    
+    th,
+    td {
+      padding: 10px;
+      text-align: left;
+    }
+    
+    thead {
+      background-color: #333;
+      color: #fff;
+    }
+    
+    tbody tr:nth-child(even) {
+      background-color: #f9f9f9;
+    }
+    
+    /* Additional Styles */
+    
+    #search {
+      border: 1px solid #211f1f;
+      border-radius: 4px;
+    }
+    
+    #designation,
+    #skills {
+      border: 1px solid #0c0b0b;
+      border-radius: 4px;
+    }
+    
+    #employeesTable {
+      font-size: 14px;
+    }
+    
+    #employeesTable th,
+    #employeesTable td {
+      border-bottom: 1px solid #ddd;
+    }
+    
+    #employeesTable th {
+      text-transform: uppercase;
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <h1>Employee Directory</h1>
+  
+  <label for="search">Search by Name:</label>
+  <input type="text" id="search" oninput="filterEmployees()" placeholder="Enter name...">
+  
+  <label for="designation">Filter by Designation:</label>
+  <select id="designation" onchange="filterEmployees()">
+    <option value="">All</option>
+    <option value="Senior Developer">Senior Developer</option>
+    <option value="QA Engineer">QA Engineer</option>
+    <option value="Project Manager">Project Manager</option>
+  </select>
+  
+  <label for="skills">Filter by Skills:</label>
+  <select id="skills" onchange="filterEmployees()">
+    <option value="">All</option>
+    <option value="JavaScript">JavaScript</option>
+    <option value="Python">Python</option>
+    <option value="Java">Java</option>
+    <option value="HTML">HTML</option>
+    <option value="CSS">CSS</option>
+    <option value="Photoshop">Photoshop</option>
+    <option value="Manual Testing">Manual Testing</option>
+    <option value="SQL">SQL</option>
+  </select>
+  
+  <table id="employeesTable">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Designation</th>
+        <th>Skills</th>
+        <th>Email</th>
+        <th>Phone</th>
+      </tr>
+    </thead>
+    <button id="filterButton">Filter</button>
+
+    <tbody id="employeesBody">
+      <!-- Employee data will be dynamically added here -->
+    </tbody>
+  </table>
+  <button id="filterButton">Filter</button>
+  <script>
+
+document.getElementById('filterButton').addEventListener('click', filterEmployees);
+
+    // Sample employee data
+const employeesData = {
+   "employees":[
+      {
+         "id":1,
+         "name":"Mr. A",
+         "designation":"Senior Developer",
+         "skills":[
+            "JavaScript",
+            "Python",
+            "Java"
+         ],
+         "projects":[
+            {
+               "name":"Project A",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Bob",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":null
+                  }
+               ]
+            },
+            {
+               "name":"Project B",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Designer"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":"undefined"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":2,
+         "name":"Mr. B",
+         "designation":null,
+         "skills":[
+            "HTML",
+            "CSS",
+            "Photoshop"
+         ],
+         "projects":[
+            {
+               "name":"Project C",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"David",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Eve",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":"undefined",
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":2,
+                     "name":null,
+                     "status":"Completed"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":3,
+         "name":null,
+         "designation":"QA Engineer",
+         "skills":[
+            "Manual Testing",
+            "undefined",
+            "SQL"
+         ],
+         "projects":null
+      },
+      {
+         "id":"undefined",
+         "name":"Mr. D",
+         "designation":"Project Manager",
+         "skills":[
+            
+         ],
+         "projects":[
+            {
+               "name":"Project D",
+               "description":null,
+               "team":[
+                  
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Pending"
+                  },
+                  {
+                     "id":"undefined",
+                     "name":null,
+                     "status":"In Progress"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":5,
+         "name":"Mr. E",
+         "designation":"Senior Developer",
+         "skills":[
+            "JavaScript",
+            "Python",
+            "Java"
+         ],
+         "projects":[
+            {
+               "name":"Project E",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Bob",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Tester"
+                  }
+               ]
+            },
+            {
+               "name":"Project F",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Designer"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":"undefined"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":6,
+         "name":"Mr. F",
+         "designation":null,
+         "skills":[
+            "HTML",
+            "CSS",
+            "Photoshop"
+         ],
+         "projects":[
+            {
+               "name":"Project G",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"David",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Eve",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":"undefined",
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":2,
+                     "name":null,
+                     "status":"Completed"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":7,
+         "name":null,
+         "designation":"QA Engineer",
+         "skills":[
+            "Manual Testing",
+            "undefined",
+            "SQL"
+         ],
+         "projects":null
+      },
+      {
+         "id":8,
+         "name":"Mr. H",
+         "designation":"Project Manager",
+         "skills":[
+            
+         ],
+         "projects":[
+            {
+               "name":"Project J",
+               "description":null,
+               "team":[
+                  
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Pending"
+                  },
+                  {
+                     "id":"undefined",
+                     "name":null,
+                     "status":"In Progress"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":9,
+         "name":"Mr. I",
+         "designation":"Senior Developer",
+         "skills":[
+            "JavaScript",
+            "Python",
+            "Java"
+         ],
+         "projects":[
+            {
+               "name":"Project I",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Bob",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":null
+                  }
+               ]
+            },
+            {
+               "name":"Project J",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Designer"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":"undefined"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":10,
+         "name":"Mr. J",
+         "designation":null,
+         "skills":[
+            "HTML",
+            "CSS",
+            "Photoshop"
+         ],
+         "projects":[
+            {
+               "name":"Project K",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"David",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Eve",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":"undefined",
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":2,
+                     "name":null,
+                     "status":"Completed"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":11,
+         "name":null,
+         "designation":"QA Engineer",
+         "skills":[
+            "Manual Testing",
+            "undefined",
+            "SQL"
+         ],
+         "projects":null
+      },
+      {
+         "id":12,
+         "name":"Mr. L",
+         "designation":"Project Manager",
+         "skills":[
+            
+         ],
+         "projects":[
+            {
+               "name":"Project L",
+               "description":null,
+               "team":[
+                  
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Pending"
+                  },
+                  {
+                     "id":"undefined",
+                     "name":null,
+                     "status":"In Progress"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":13,
+         "name":"Mr. M",
+         "designation":"Senior Developer",
+         "skills":[
+            "JavaScript",
+            "Python",
+            "Java"
+         ],
+         "projects":[
+            {
+               "name":"Project M",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Bob",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":null
+                  }
+               ]
+            },
+            {
+               "name":"Project N",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"Alice",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":null,
+                     "role":"Designer"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":2,
+                     "name":"Task 2",
+                     "status":"In Progress"
+                  },
+                  {
+                     "id":3,
+                     "name":"Task 3",
+                     "status":"undefined"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":14,
+         "name":"Mr. N",
+         "designation":null,
+         "skills":[
+            "HTML",
+            "CSS",
+            "Photoshop"
+         ],
+         "projects":[
+            {
+               "name":"Project O",
+               "description":"Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+               "team":[
+                  {
+                     "name":"David",
+                     "role":"Developer"
+                  },
+                  {
+                     "name":"Eve",
+                     "role":"Designer"
+                  },
+                  {
+                     "name":"undefined",
+                     "role":"Tester"
+                  }
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Completed"
+                  },
+                  {
+                     "id":2,
+                     "name":null,
+                     "status":"Completed"
+                  }
+               ]
+            }
+         ]
+      },
+      {
+         "id":15,
+         "name":null,
+         "designation":"QA Engineer",
+         "skills":[
+            "Manual Testing",
+            "undefined",
+            "SQL"
+         ],
+         "projects":null
+      },
+      {
+         "id":16,
+         "name":"Mr. P",
+         "designation":"Project Manager",
+         "skills":[
+            
+         ],
+         "projects":[
+            {
+               "name":"Project P",
+               "description":null,
+               "team":[
+                  
+               ],
+               "tasks":[
+                  {
+                     "id":1,
+                     "name":"Task 1",
+                     "status":"Pending"
+                  },
+                  {
+                     "id":"undefined",
+                     "name":null,
+                     "status":"In Progress"
+                  }
+               ]
+            }
+         ]
+      }
+   ]
+};
+
+// Function to filter employees based on search input and filters
+function filterEmployees() {
+  const searchInput = document.getElementById('search').value.toLowerCase();
+  const designationFilter = document.getElementById('designation').value;
+  const skillsFilter = document.getElementById('skills').value;
+
+  const filteredEmployees = employeesData.employees.filter(employee => {
+    const nameMatch = employee.name.toLowerCase().includes(searchInput);
+    const designationMatch = designationFilter === '' || employee.designation === designationFilter;
+    const skillsMatch = skillsFilter === '' || employee.skills.includes(skillsFilter);
+    return nameMatch && designationMatch && skillsMatch;
+  });
+
+  displayEmployees(filteredEmployees);
+}
+
+// Function to display filtered employees in the table
+function displayEmployees(employees) {
+  const employeesBody = document.getElementById('employeesBody');
+  employeesBody.innerHTML = '';
+
+  employees.forEach(employee => {
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${employee.id}</td>
+      <td>${employee.name}</td>
+      <td>${employee.designation}</td>
+      <td>${employee.skills.join(', ')}</td>
+      <td>${employee.email}</td> 
+      <td>${employee.phone}</td> 
+    `;
+    employeesBody.appendChild(row);
+  });
+}
+
+// Initial display of all employees
+displayEmployees(employeesData.employees);
+
+  </script>
+
+  <script src="employee-directory.js"></script>
+
+</body>
+</html>

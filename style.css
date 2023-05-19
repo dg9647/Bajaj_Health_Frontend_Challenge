@@ -1,0 +1,32 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  h1 {
+    text-align: center;
+  }
+  
+  .search {
+    margin-bottom: 20px;
+  }
+  
+  #developersContainer {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-gap: 20px;
+  }
+  
+  .developer-card {
+    border: 1px solid #ccc;
+    padding: 10px;
+  }
+  
+  .developer-card h2 {
+    margin-top: 0;
+  }
+  
+  .developer-card p {
+    margin-bottom: 5px;
+  }
+  
